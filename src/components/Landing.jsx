@@ -9,19 +9,26 @@ import wikiIcon from "../assets/icon-new-window.svg";
 import axios from "axios";
 
 function Landing() {
- 
-  
+  const [searchTerm, setSearchTerm] = useState("");
+  const [response, setResponse] = useState(null);
 
   const getInformation = async () => {
     try {
-        const response = await axios.get("https://api.dictionaryapi.dev/api/v2/entries/en/school");
-        console.log(response.data);
-
+      const response = await axios.get(
+        `https://api.dictionaryapi.dev/api/v2/entries/en/${searchTerm}`
+      );
+      setResponse(response.data[0]);
     } catch (error) {}
-      
   };
 
-  getInformation ();
+  const handleInputChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    getInformation();
+  };
 
   return (
     <>
@@ -54,14 +61,15 @@ function Landing() {
           </div>
         </div>
         <div id="container1" className="mt-6">
-          <form class="w-full flex justify-center">
+          <form class="w-full flex justify-center" onSubmit={handleSubmit}>
             <div class="w-full">
               <div class="">
                 <input
                   class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-keyboard-color leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
                   id="searchBar"
                   type="text"
-                  value="word"
+                  value={searchTerm}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
@@ -70,10 +78,10 @@ function Landing() {
           <div className="flex items-center justify-between mt-6">
             <div>
               <h1 className="font-inter  text-4xl leading-10 font-[700] text-keyboard-color">
-                keyboard
+              {response && response.word ? response.word : ''}
               </h1>
               <h2 className="font-inter font-[400] text-base leading-6 text-purple-custom mt-[8px]">
-                /ˈkiːbɔːd/
+              {response && response.phonetic ? response.phonetic : ''}
               </h2>
             </div>
             <img src={playIcon} alt="" className="w-[48px]" />
