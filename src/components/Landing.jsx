@@ -44,12 +44,12 @@ function Landing() {
             </h3>
             <img src={arrowDown} alt="" className="w-[12px]" />
             <div className="bg-gray-200 w-px h-8"></div>
-            <label class="relative flex justify-between items-center group  text-xl">
+            <label class="relative flex justify-between items-center ">
               <input
                 type="checkbox"
                 class="absolute left-1/2 -translate-x-1/2 w-full h-full peer appearance-none rounded-md"
               />
-              <span class="w-16 h-10 flex items-center flex-shrink-0 ml-4 p-1 bg-gray-300 rounded-full duration-300 ease-in-out peer-checked:bg-green-400 after:w-8 after:h-8 after:bg-white after:rounded-full after:shadow-md after:duration-300 peer-checked:after:translate-x-6 group-hover:after:translate-x-1"></span>
+              <span class="w-[40px] h-[20px] flex items-center flex-shrink-0  p-[3px] bg-meaning-color rounded-full duration-300 ease-in-out peer-checked:bg-purple-custom after:w-[14px] after:h-[14px] after:bg-white after:rounded-full after:shadow-md after:duration-300 peer-checked:after:translate-x-5 group-hover:after:translate-x-1"></span>
             </label>
             <img src={moon} alt="" className="w-[20px]" />
 
@@ -57,11 +57,11 @@ function Landing() {
           </div>
         </div>
         <div id="container1" className="mt-6">
-          <form class="w-full flex justify-center" onSubmit={handleSubmit}>
-            <div class="w-full">
-              <div class="">
+          <form className="w-full flex justify-center relative" onSubmit={handleSubmit}>
+            <div className="w-full">
+              <div className="">
                 <input
-                  class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-keyboard-color leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                  className="bg-gray-200 appearance-none border-2  border-gray-200 rounded-xl w-full py-2 px-4 text-keyboard-color  leading-tight focus:outline-none focus:bg-white focus:border-purple-custom font-inter text-base"
                   id="searchBar"
                   type="text"
                   value={searchTerm}
@@ -69,7 +69,7 @@ function Landing() {
                 />
               </div>
             </div>
-            <img src={searchIcon} alt="" />
+            <img id="search_icon" src={searchIcon} alt="" className="w-[15.5px] absolute top-3 right-3"/>
           </form>
           <div className="flex items-center justify-between mt-6">
             <div>
