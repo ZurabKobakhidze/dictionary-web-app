@@ -1,5 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Route, Routes, Link, Navigate } from "react-router-dom";
+import React, { useState, useRef } from "react";
 import logo from "../assets/logo.svg";
 import arrowDown from "../assets/icon-arrow-down.svg";
 import moon from "../assets/icon-moon.svg";
@@ -21,11 +20,17 @@ function Landing() {
       const response = await axios.get(
         `https://api.dictionaryapi.dev/api/v2/entries/en/${searchTerm}`
       );
-      setResponseData(response.data[0]);
-      setSourceUrls(response.data[0].sourceUrls);
-      setAudioUrl(response.data[0].audio);
-      console.log(response.data[0].audio);
-    } catch (error) {}
+      const responseData = response.data[0];
+      setResponseData(responseData);
+      if (responseData.sourceUrls) {
+        setSourceUrls(responseData.sourceUrls);
+      }
+      if (responseData.phonetics && responseData.phonetics[0].audio) {
+        setAudioUrl(responseData.phonetics[0].audio);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleInputChange = (event) => {
@@ -94,36 +99,77 @@ function Landing() {
               className="w-[15.5px] absolute top-3 right-3"
             />
           </form>
-          <div className="flex items-center justify-between mt-6">
-            <div>
-              <h1 className="font-inter  text-4xl leading-10 font-[700] text-keyboard-color">
-                {responseData && responseData.word ? responseData.word : ""}
-              </h1>
-              <h2 className="font-inter font-[400] text-base leading-6 text-purple-custom mt-[8px]">
-                {responseData && responseData.phonetic
-                  ? responseData.phonetic
-                  : ""}
-              </h2>
+          {responseData && (
+            <div className="flex items-center justify-between mt-6">
+              <div>
+                <h1
+                  id="word"
+                  className="font-inter text-4xl leading-10 font-[700] text-keyboard-color"
+                >
+                  {responseData.word}
+                </h1>
+                <h2
+                  id="phonetic"
+                  className="font-inter font-[400] text-base leading-6 text-purple-custom mt-[8px]"
+                >
+                  {responseData.phonetic}
+                </h2>
+              </div>
+              <img
+                src={playIcon}
+                alt=""
+                className="w-[48px]"
+                style={{ cursor: "pointer" }}
+                onClick={playAudio}
+              />
             </div>
-            <img src={playIcon} alt="" className="w-[48px]" style={{ cursor: 'pointer' }} onClick={playAudio} />
-  </div>
-  <audio ref={audioRef}>
-    <source src={audioUrl} type="audio/mpeg" />
-  </audio>
+          )}
+          <audio ref={audioRef} src={audioUrl} />
         </div>
         {responseData &&
           responseData.meanings &&
           responseData.meanings.map((meaning, index) => (
             <div key={index}>
-              <h3>{meaning.partOfSpeech}</h3>
+              <div
+                id="noun_div"
+                className="flex flex-row items-center gap-[25px] mt-[31px]"
+              >
+                <h3
+                  id="noun"
+                  className="font-inconsolata font-bold text-base leading-tight text-keyboard-color italic"
+                >
+                  {meaning.partOfSpeech}
+                </h3>
+                <div className="bg-gray-200 h-px w-full "></div>
+              </div>
+              {responseData && (
+              <h3 className="font-inter font-[400] text-sm leading-5 text-meaning-color mt-[31px]">
+                    Meaning
+                  </h3>)}
               {meaning.definitions.map((def, index) => (
                 <div key={index}>
-                  <p>{def.definition}</p>
-                  {def.example && <p>Example: {def.example}</p>}
+                  
+                  <div
+                    id="p_div"
+                    className="mt-[17px] flex flex-row items-start justify-start gap-5"
+                  >
+                    <div
+                      id="dot"
+                      className="bg-purple-custom h-5px w-5px rounded-full mt-[10px]"
+                    ></div>
+                    <p
+                      id="p-text"
+                      className="font-inter font-[400]  text-xs leading-6 text-keyboard-color w-[302px]"
+                    >
+                      {def.definition}
+                    </p>
+                  </div>
+
+                  {def.example && <p className="font-inter font-[400] text-sm leading-6 text-meaning-color pl-6 box-border rounded mt-[13px]">"{def.example}"</p>}
                   {def.synonyms && def.synonyms.length > 0 && (
-                    <div>
-                      <h4>Synonyms</h4>
-                      <ul>
+                    <div className="flex items-center gap-x-6 mt-[24px]">
+                      <h4 className="font-inter font-[400] leading-tight text-meaning-color">Synonyms</h4>
+                      <ul className="flex items-center gap-x-4 font-inter font-[700] text-base leading-tight text-purple-custom">
                         {def.synonyms.map((syn, index) => (
                           <li key={index}>{syn}</li>
                         ))}
@@ -131,9 +177,9 @@ function Landing() {
                     </div>
                   )}
                   {def.antonyms && def.antonyms.length > 0 && (
-                    <div>
-                      <h4>Antonyms</h4>
-                      <ul>
+                    <div className="flex items-center gap-x-6 mt-[24px]">
+                      <h4 className="font-inter font-[400] leading-tight text-meaning-color">Antonyms</h4>
+                      <ul className="flex items-center gap-x-4 font-inter font-[700] text-base leading-tight text-purple-custom">
                         {def.antonyms.map((ant, index) => (
                           <li key={index}>{ant}</li>
                         ))}
@@ -144,12 +190,15 @@ function Landing() {
               ))}
             </div>
           ))}
-
-        <div className="bg-gray-200 h-px w-full mt-[32px]"></div>
+        {responseData && (
+          <div className="bg-gray-200 h-px w-full mt-[32px]"></div>
+        )}
         <footer id="footer" className="mt-[24px]">
-          <h2 className="font-inter font-[400] text-sm leading-6 underline text-meaning-color">
-            Source
-          </h2>
+          {responseData && (
+            <h2 className="font-inter font-[400] text-sm leading-6 underline text-meaning-color">
+              Source
+            </h2>
+          )}
           {sourceUrls.map((url, index) => (
             <div
               key={index}
