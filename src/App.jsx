@@ -1,8 +1,6 @@
-import { React } from "react";
+import React from "react";
 import { Route, Routes, Link, Navigate } from "react-router-dom";
 import { Landing } from "./components/Landing";
-
-
 
 function App() {
   return (
@@ -15,4 +13,4 @@ function App() {
   );
 }
 
-export default App; 
+export default App;
