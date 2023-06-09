@@ -1,7 +1,7 @@
-import React, { useState, useRef , useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import logo from "../assets/logo.svg";
-import arrowDown from "../assets/icon-arrow-down.svg";
 import moon from "../assets/icon-moon.svg";
+import purpleMoon from "../assets/moonPurple.svg";
 import searchIcon from "../assets/icon-search.svg";
 import playIcon from "../assets/icon-play.svg";
 import wikiIcon from "../assets/icon-new-window.svg";
@@ -9,9 +9,9 @@ import axios from "axios";
 import Select from "react-select";
 
 const fontOptions = [
-  { value: 'inter', label: 'Inter' },
-  { value: 'inconsolata', label: 'Inconsolata' },
-  { value: 'lora', label: 'Lora' },
+  { value: "inter", label: "Inter" },
+  { value: "inconsolata", label: "Inconsolata" },
+  { value: "lora", label: "Lora" },
 ];
 
 function Landing() {
@@ -20,6 +20,7 @@ function Landing() {
   const [sourceUrls, setSourceUrls] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const audioRef = useRef(null);
+  const [isLight, setIsLight] = useState(true);
 
   const getInformation = async () => {
     try {
@@ -54,9 +55,7 @@ function Landing() {
     }
   };
 
-  
-
-  const [font, setFont] = useState('inter');
+  const [font, setFont] = useState("inter");
 
   const handleFontChange = (selectedOption) => {
     setFont(selectedOption.value);
@@ -68,60 +67,96 @@ function Landing() {
   }, [font]);
 
   const fontFamily = {
-    inter: 'Inter, sans-serif',
-    inconsolata: 'Inconsolata, monospace',
-    lora: 'Lora, serif',
+    inter: "Inter, sans-serif",
+    inconsolata: "Inconsolata, monospace",
+    lora: "Lora, serif",
+  };
+
+  const handleCheckboxChange = () => {
+    setIsLight(!isLight);
   };
 
   return (
     <>
-      <div id="container" className="box-border pt-6 pl-6 pr-6 pb-[84px]">
-        <div id="header" className="flex flex-row justify-between items-center">
+      <div
+        id="container"
+        className={`min-h-screen box-border pt-6 pl-6 pr-6 pb-[84px] ${
+          isLight ? "" : "bg-night-black"
+        }`}
+      >
+        <div
+          id="header"
+          className={`flex flex-row justify-between items-center ${
+            isLight ? "" : "bg-night-black"
+          }`}
+        >
           <img id="logo" src={logo} alt="" className="w-[28px]" />
           <div
             id=""
             className="flex flex-row justify-center items-center gap-x-4"
           >
-           <Select className="w-[147px] "
-           styles={{
-            control: (provided, state) => ({
-              ...provided,
-              boxShadow: state.isFocused ? '0 0 0 2px #8F19E8' : 'none',
-              border: 'none',
-            }),
-            dropdownIndicator: (provided) => ({
-              ...provided,
-              
-              color: '#8F19E8',
-            }),
-            indicatorSeparator: () => ({
-              display: 'none', 
-            }),
-            indicatorsContainer2: (provided) => ({
-              ...provided,
-              flexDirection: 'row',
-              justifyContent: 'flex-start',
-              alignItems: 'center',
-              gap: '0',
-            }),
-           
-          }}
-           
-          value={fontOptions.find((option) => option.value === font)}
-          options={fontOptions}
-          onChange={handleFontChange}
-        />
+            <Select
+              className="w-[147px]"
+              styles={{
+                control: (provided, state) => ({
+                  ...provided,
+                  boxShadow: state.isFocused ? "0 0 0 2px #8F19E8" : "none",
+                  border: "none",
+                  backgroundColor: "none",
+                }),
+                singleValue: (provided) => ({
+                  ...provided,
+                  color: isLight ? "black" : "white",
+                }),
+                dropdownIndicator: (provided) => ({
+                  ...provided,
+                  color: "#8F19E8",
+                }),
+
+                indicatorSeparator: () => ({
+                  display: "none",
+                }),
+
+                indicatorsContainer2: (provided) => ({
+                  ...provided,
+                  flexDirection: "row",
+                  justifyContent: "flex-start",
+                  alignItems: "center",
+                  gap: "0",
+                }),
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isSelected
+                    ? "#8F19E8"
+                    : isLight
+                    ? "white"
+                    : "#050505",
+                  color: state.isSelected
+                    ? "white"
+                    : isLight
+                    ? "#050505"
+                    : "white",
+                }),
+              }}
+              value={fontOptions.find((option) => option.value === font)}
+              options={fontOptions}
+              onChange={handleFontChange}
+            />
 
             <div className="bg-gray-200 w-px h-8"></div>
             <label className="relative flex justify-between items-center ">
               <input
                 type="checkbox"
                 className="absolute left-1/2 -translate-x-1/2 w-full h-full peer appearance-none rounded-md"
+                onChange={handleCheckboxChange}
               />
               <span className="w-[40px] h-[20px] flex items-center flex-shrink-0  p-[3px] bg-meaning-color rounded-full duration-300 ease-in-out peer-checked:bg-purple-custom after:w-[14px] after:h-[14px] after:bg-white after:rounded-full after:shadow-md after:duration-300 peer-checked:after:translate-x-5 group-hover:after:translate-x-1"></span>
             </label>
-            <img src={moon} alt="" className="w-[20px]" />
-
+            {isLight ? (
+              <img src={moon} alt="" className="w-[20px]" />
+            ) : (
+              <img src={purpleMoon} alt="" className="w-[20px]" />
+            )}
             <div></div>
           </div>
         </div>
@@ -132,11 +167,17 @@ function Landing() {
           <div className="w-full">
             <div className="">
               <input
-                className="bg-gray-200 appearance-none border-2  border-gray-200 rounded-xl w-full py-2 px-4 text-keyboard-color  leading-tight focus:outline-none focus:bg-white focus:border-purple-custom "
+                className="bg-gray-200 appearance-none border-2 rounded-xl w-full py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-purple-custom"
+                style={{
+                  backgroundColor: isLight ? "#F3F4F6" : "#1F1F1F",
+                  color: isLight ? "black" : "white",
+                  border: isLight ? "2px solid #E5E7EB" : "none",
+                }}
                 id="searchBar"
                 type="text"
                 value={searchTerm}
                 onChange={handleInputChange}
+                placeholder="Search"
               />
             </div>
           </div>
@@ -144,7 +185,8 @@ function Landing() {
             id="search_icon"
             src={searchIcon}
             alt=""
-            className="w-[15.5px] absolute top-3 right-3"
+            className="w-[15.5px] absolute top-3 right-3 cursor-pointer"
+            onClick={handleSubmit}
           />
         </form>
 
@@ -158,7 +200,9 @@ function Landing() {
                     <div>
                       <h1
                         id="word"
-                        className="{`font-${font} text-4xl leading-10 font-[700] text-keyboard-color"
+                        className={`font-${font} text-4xl leading-10 font-[700] ${
+                          isLight ? "text-keyboard-color" : "text-white"
+                        }`}
                       >
                         {responseData.word}
                       </h1>
@@ -186,11 +230,15 @@ function Landing() {
               >
                 <h3
                   id="noun"
-                  className="{`font-${font}  font-bold text-base leading-tight text-keyboard-color italic"
+                  className={`font-${font} font-bold text-base leading-tight ${
+                    isLight ? "text-keyboard-color" : "text-white"
+                  } italic`}
                 >
                   {meaning.partOfSpeech}
                 </h3>
-                <div className="bg-gray-200 h-px w-full "></div>
+                <div id="line"
+                   className={`bg-gray-200 h-px w-full ${isLight ? "" : "bg-gray-800"}`}
+                ></div>
               </div>
               {responseData && (
                 <h3 className="{`font-${font} font-[400] text-sm leading-5 text-meaning-color mt-[31px]">
@@ -209,7 +257,9 @@ function Landing() {
                     ></div>
                     <p
                       id="p-text"
-                      className="{`font-${font} font-[400]  text-xs leading-6 text-keyboard-color w-[302px]"
+                      className={`font-${font} font-[400] text-xs leading-6 ${
+                        isLight ? "text-keyboard-color" : "text-white"
+                      } w-[302px]`}
                     >
                       {def.definition}
                     </p>
@@ -265,11 +315,18 @@ function Landing() {
             >
               <a
                 href={url}
-                className="{`font-${font} font-[400] text-xs leading-none h-17 underline text-keyboard-color"
+                className={`font-${font} font-[400] text-xs leading-none h-17 underline ${
+                  isLight ? "text-keyboard-color" : "text-white"
+                }`}
               >
                 Wiktionary
               </a>
-              <img src={wikiIcon} alt="" />
+              <img
+                src={wikiIcon}
+                alt=""
+                className="cursor-pointer"
+                onClick={() => window.open(url, "_blank")}
+              />
             </div>
           ))}
         </footer>

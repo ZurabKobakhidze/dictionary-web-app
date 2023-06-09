@@ -7,6 +7,8 @@ export default {
         "purple-custom": "#8F19E8",
         "meaning-color": "#757575",
         "keyboard-color": "#2D2D2D",
+        "night-black": "#050505",
+        "line-dark" : "3A3A3A" ,
       },
       spacing: {
         "5px": "5px",
