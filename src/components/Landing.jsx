@@ -7,6 +7,7 @@ import playIcon from "../assets/icon-play.svg";
 import wikiIcon from "../assets/icon-new-window.svg";
 import axios from "axios";
 import Select from "react-select";
+import Emoji from "../assets/emoji.png";
 
 const fontOptions = [
   { value: "inter", label: "Inter" },
@@ -21,6 +22,7 @@ function Landing() {
   const [audioUrl, setAudioUrl] = useState("");
   const audioRef = useRef(null);
   const [isLight, setIsLight] = useState(true);
+  const [notFound, setNotFound] = useState(false);
 
   const getInformation = async () => {
     try {
@@ -35,8 +37,10 @@ function Landing() {
       if (responseData.phonetics && responseData.phonetics[0].audio) {
         setAudioUrl(responseData.phonetics[0].audio);
       }
+      setNotFound(false); // Clear the "not found" state
     } catch (error) {
       console.log(error);
+      setNotFound(true);
     }
   };
 
@@ -171,7 +175,7 @@ function Landing() {
                 style={{
                   backgroundColor: isLight ? "#F3F4F6" : "#1F1F1F",
                   color: isLight ? "black" : "white",
-                  border: isLight ? "2px solid #E5E7EB" : "none",
+                  border: isLight ? "" : " 2px solid black",
                 }}
                 id="searchBar"
                 type="text"
@@ -190,7 +194,8 @@ function Landing() {
           />
         </form>
 
-        {responseData &&
+        {!notFound &&
+          responseData &&
           responseData.meanings &&
           responseData.meanings.map((meaning, index) => (
             <div key={index}>
@@ -236,8 +241,11 @@ function Landing() {
                 >
                   {meaning.partOfSpeech}
                 </h3>
-                <div id="line"
-                   className={`bg-gray-200 h-px w-full ${isLight ? "" : "bg-gray-800"}`}
+                <div
+                  id="line"
+                  className={`bg-gray-200 h-px w-full ${
+                    isLight ? "" : "bg-gray-700"
+                  }`}
                 ></div>
               </div>
               {responseData && (
@@ -298,38 +306,53 @@ function Landing() {
               ))}
             </div>
           ))}
-        {responseData && (
-          <div className="bg-gray-200 h-px w-full mt-[32px]"></div>
-        )}
-        <footer id="footer" className="mt-[24px]">
-          {responseData && (
-            <h2 className="{`font-${font} font-[400] text-sm leading-6 underline text-meaning-color">
-              Source
+
+        {notFound && (
+          <div className="flex flex-col items-center justify-center mt-6">
+            <img src={Emoji} alt="" className="w-[64px] mt-[132px]" />
+            <h2 className={`font-${font} font-bold text-2xl leading-6 text-center ${isLight ? "text-keyboard-color" : "text-white"} mt-[44px]`}>
+              No Definitions Found
             </h2>
-          )}
-          {sourceUrls.map((url, index) => (
-            <div
-              key={index}
-              id="wiki_div"
-              className="flex items-center gap-x-[15px] mt-2"
-            >
-              <a
-                href={url}
-                className={`font-${font} font-[400] text-xs leading-none h-17 underline ${
-                  isLight ? "text-keyboard-color" : "text-white"
-                }`}
-              >
-                Wiktionary
-              </a>
-              <img
-                src={wikiIcon}
-                alt=""
-                className="cursor-pointer"
-                onClick={() => window.open(url, "_blank")}
-              />
-            </div>
-          ))}
-        </footer>
+            <h2 className="{`font-${font} mt-[24px] font-normal text-base leading-6 text-meaning-color text-center">
+              Sorry pal, we couldn't find definitions for the word you were
+              looking for. You can try the search again at later time or head to
+              the web instead.
+            </h2>
+          </div>
+        )}
+
+        {responseData && !notFound && (
+          <>
+            <div className="bg-gray-200 h-px w-full mt-[32px]"></div>
+            <footer id="footer" className="mt-[24px]">
+              <h2 className="{`font-${font} font-[400] text-sm leading-6 underline text-meaning-color">
+                Source
+              </h2>
+              {sourceUrls.map((url, index) => (
+                <div
+                  key={index}
+                  id="wiki_div"
+                  className="flex items-center gap-x-[15px] mt-2"
+                >
+                  <a
+                    href={url}
+                    className={`font-${font} font-[400] text-xs leading-none h-17 underline ${
+                      isLight ? "text-keyboard-color" : "text-white"
+                    }`}
+                  >
+                    Wiktionary
+                  </a>
+                  <img
+                    src={wikiIcon}
+                    alt=""
+                    className="cursor-pointer"
+                    onClick={() => window.open(url, "_blank")}
+                  />
+                </div>
+              ))}
+            </footer>
+          </>
+        )}
       </div>
     </>
   );
