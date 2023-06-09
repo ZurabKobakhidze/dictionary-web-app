@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef , useEffect } from "react";
 import logo from "../assets/logo.svg";
 import arrowDown from "../assets/icon-arrow-down.svg";
 import moon from "../assets/icon-moon.svg";
@@ -6,11 +6,17 @@ import searchIcon from "../assets/icon-search.svg";
 import playIcon from "../assets/icon-play.svg";
 import wikiIcon from "../assets/icon-new-window.svg";
 import axios from "axios";
+import Select from "react-select";
+
+const fontOptions = [
+  { value: 'inter', label: 'Inter' },
+  { value: 'inconsolata', label: 'Inconsolata' },
+  { value: 'lora', label: 'Lora' },
+];
 
 function Landing() {
   const [searchTerm, setSearchTerm] = useState("");
   const [responseData, setResponseData] = useState(null);
-  const [font, setFont] = useState("sans-serif");
   const [sourceUrls, setSourceUrls] = useState([]);
   const [audioUrl, setAudioUrl] = useState("");
   const audioRef = useRef(null);
@@ -48,6 +54,25 @@ function Landing() {
     }
   };
 
+  
+
+  const [font, setFont] = useState('inter');
+
+  const handleFontChange = (selectedOption) => {
+    setFont(selectedOption.value);
+  };
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.fontFamily = fontFamily[font];
+  }, [font]);
+
+  const fontFamily = {
+    inter: 'Inter, sans-serif',
+    inconsolata: 'Inconsolata, monospace',
+    lora: 'Lora, serif',
+  };
+
   return (
     <>
       <div id="container" className="box-border pt-6 pl-6 pr-6 pb-[84px]">
@@ -57,12 +82,36 @@ function Landing() {
             id=""
             className="flex flex-row justify-center items-center gap-x-4"
           >
-            <select value={font} onChange={(e) => setFont(e.target.value)}>
-              <option value="sans-serif">Sans Serif</option>
-              <option value="serif">Serif</option>
-              <option value="monospace">Monospace</option>
-            </select>
-            <img src={arrowDown} alt="" className="w-[12px]" />
+           <Select className="w-[147px] "
+           styles={{
+            control: (provided, state) => ({
+              ...provided,
+              boxShadow: state.isFocused ? '0 0 0 2px #8F19E8' : 'none',
+              border: 'none',
+            }),
+            dropdownIndicator: (provided) => ({
+              ...provided,
+              
+              color: '#8F19E8',
+            }),
+            indicatorSeparator: () => ({
+              display: 'none', 
+            }),
+            indicatorsContainer2: (provided) => ({
+              ...provided,
+              flexDirection: 'row',
+              justifyContent: 'flex-start',
+              alignItems: 'center',
+              gap: '0',
+            }),
+           
+          }}
+           
+          value={fontOptions.find((option) => option.value === font)}
+          options={fontOptions}
+          onChange={handleFontChange}
+        />
+
             <div className="bg-gray-200 w-px h-8"></div>
             <label className="relative flex justify-between items-center ">
               <input
@@ -76,79 +125,80 @@ function Landing() {
             <div></div>
           </div>
         </div>
-        <div id="container1" className="mt-6">
-          <form
-            className="w-full flex justify-center relative"
-            onSubmit={handleSubmit}
-          >
-            <div className="w-full">
-              <div className="">
-                <input
-                  className="bg-gray-200 appearance-none border-2  border-gray-200 rounded-xl w-full py-2 px-4 text-keyboard-color  leading-tight focus:outline-none focus:bg-white focus:border-purple-custom "
-                  id="searchBar"
-                  type="text"
-                  value={searchTerm}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-            <img
-              id="search_icon"
-              src={searchIcon}
-              alt=""
-              className="w-[15.5px] absolute top-3 right-3"
-            />
-          </form>
-          {responseData && (
-            <div className="flex items-center justify-between mt-6">
-              <div>
-                <h1
-                  id="word"
-                  className="font-inter text-4xl leading-10 font-[700] text-keyboard-color"
-                >
-                  {responseData.word}
-                </h1>
-                <h2
-                  id="phonetic"
-                  className="font-inter font-[400] text-base leading-6 text-purple-custom mt-[8px]"
-                >
-                  {responseData.phonetic}
-                </h2>
-              </div>
-              <img
-                src={playIcon}
-                alt=""
-                className="w-[48px]"
-                style={{ cursor: "pointer" }}
-                onClick={playAudio}
+        <form
+          className="w-full flex justify-center relative mt-6"
+          onSubmit={handleSubmit}
+        >
+          <div className="w-full">
+            <div className="">
+              <input
+                className="bg-gray-200 appearance-none border-2  border-gray-200 rounded-xl w-full py-2 px-4 text-keyboard-color  leading-tight focus:outline-none focus:bg-white focus:border-purple-custom "
+                id="searchBar"
+                type="text"
+                value={searchTerm}
+                onChange={handleInputChange}
               />
             </div>
-          )}
-          <audio ref={audioRef} src={audioUrl} />
-        </div>
+          </div>
+          <img
+            id="search_icon"
+            src={searchIcon}
+            alt=""
+            className="w-[15.5px] absolute top-3 right-3"
+          />
+        </form>
+
         {responseData &&
           responseData.meanings &&
           responseData.meanings.map((meaning, index) => (
             <div key={index}>
+              <div id="container1">
+                {responseData && (
+                  <div className="flex items-center justify-between mt-6">
+                    <div>
+                      <h1
+                        id="word"
+                        className="{`font-${font} text-4xl leading-10 font-[700] text-keyboard-color"
+                      >
+                        {responseData.word}
+                      </h1>
+                      <h2
+                        id="phonetic"
+                        className="{`font-${font} font-[400] text-base leading-6 text-purple-custom mt-[8px]"
+                      >
+                        {responseData.phonetic}
+                      </h2>
+                    </div>
+                    <img
+                      src={playIcon}
+                      alt=""
+                      className="w-[48px]"
+                      style={{ cursor: "pointer" }}
+                      onClick={playAudio}
+                    />
+                  </div>
+                )}
+                <audio ref={audioRef} src={audioUrl} />
+              </div>
               <div
                 id="noun_div"
                 className="flex flex-row items-center gap-[25px] mt-[31px]"
               >
                 <h3
                   id="noun"
-                  className="font-inconsolata font-bold text-base leading-tight text-keyboard-color italic"
+                  className="{`font-${font}  font-bold text-base leading-tight text-keyboard-color italic"
                 >
                   {meaning.partOfSpeech}
                 </h3>
                 <div className="bg-gray-200 h-px w-full "></div>
               </div>
               {responseData && (
-              <h3 className="font-inter font-[400] text-sm leading-5 text-meaning-color mt-[31px]">
-                    Meaning
-                  </h3>)}
+                <h3 className="{`font-${font} font-[400] text-sm leading-5 text-meaning-color mt-[31px]">
+                  Meaning
+                </h3>
+              )}
               {meaning.definitions.map((def, index) => (
                 <div key={index}>
-                  
                   <div
                     id="p_div"
                     className="mt-[17px] flex flex-row items-start justify-start gap-5"
@@ -159,17 +209,23 @@ function Landing() {
                     ></div>
                     <p
                       id="p-text"
-                      className="font-inter font-[400]  text-xs leading-6 text-keyboard-color w-[302px]"
+                      className="{`font-${font} font-[400]  text-xs leading-6 text-keyboard-color w-[302px]"
                     >
                       {def.definition}
                     </p>
                   </div>
 
-                  {def.example && <p className="font-inter font-[400] text-sm leading-6 text-meaning-color pl-6 box-border rounded mt-[13px]">"{def.example}"</p>}
+                  {def.example && (
+                    <p className="{`font-${font} font-[400] text-sm leading-6 text-meaning-color pl-6 box-border rounded mt-[13px]">
+                      "{def.example}"
+                    </p>
+                  )}
                   {def.synonyms && def.synonyms.length > 0 && (
                     <div className="flex items-center gap-x-6 mt-[24px]">
-                      <h4 className="font-inter font-[400] leading-tight text-meaning-color">Synonyms</h4>
-                      <ul className="flex items-center gap-x-4 font-inter font-[700] text-base leading-tight text-purple-custom">
+                      <h4 className="{`font-${font} font-[400] leading-tight text-meaning-color">
+                        Synonyms
+                      </h4>
+                      <ul className="flex items-center gap-x-4 {`font-${font} font-[700] text-base leading-tight text-purple-custom">
                         {def.synonyms.map((syn, index) => (
                           <li key={index}>{syn}</li>
                         ))}
@@ -178,8 +234,10 @@ function Landing() {
                   )}
                   {def.antonyms && def.antonyms.length > 0 && (
                     <div className="flex items-center gap-x-6 mt-[24px]">
-                      <h4 className="font-inter font-[400] leading-tight text-meaning-color">Antonyms</h4>
-                      <ul className="flex items-center gap-x-4 font-inter font-[700] text-base leading-tight text-purple-custom">
+                      <h4 className="{`font-${font} font-[400] leading-tight text-meaning-color">
+                        Antonyms
+                      </h4>
+                      <ul className="flex items-center gap-x-4 {`font-${font} font-[700] text-base leading-tight text-purple-custom">
                         {def.antonyms.map((ant, index) => (
                           <li key={index}>{ant}</li>
                         ))}
@@ -195,7 +253,7 @@ function Landing() {
         )}
         <footer id="footer" className="mt-[24px]">
           {responseData && (
-            <h2 className="font-inter font-[400] text-sm leading-6 underline text-meaning-color">
+            <h2 className="{`font-${font} font-[400] text-sm leading-6 underline text-meaning-color">
               Source
             </h2>
           )}
@@ -207,7 +265,7 @@ function Landing() {
             >
               <a
                 href={url}
-                className="font-inter font-[400] text-xs leading-none h-17 underline text-keyboard-color"
+                className="{`font-${font} font-[400] text-xs leading-none h-17 underline text-keyboard-color"
               >
                 Wiktionary
               </a>
