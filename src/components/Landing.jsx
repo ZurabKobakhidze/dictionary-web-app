@@ -37,7 +37,7 @@ function Landing() {
       if (responseData.phonetics && responseData.phonetics[0].audio) {
         setAudioUrl(responseData.phonetics[0].audio);
       }
-      setNotFound(false); // Clear the "not found" state
+      setNotFound(false);
     } catch (error) {
       console.log(error);
       setNotFound(true);
@@ -84,8 +84,8 @@ function Landing() {
     <>
       <div
         id="container"
-        className={`min-h-screen box-border pt-6 pl-6 pr-6 pb-[84px] ${
-          isLight ? "" : "bg-night-black"
+        className={`min-h-screen box-border pt-6 pl-6 pr-6 pb-[84px] tablet:pt-[58px]  tablet:pl-[40px] tablet:pr-[40px] tablet:pb-[118px] desktop:pl-[352px] desktop:pr-[352px] desktop:pb-[123px] ${
+          isLight ? "" : "bg-night-black "
         }`}
       >
         <div
@@ -94,20 +94,22 @@ function Landing() {
             isLight ? "" : "bg-night-black"
           }`}
         >
-          <img id="logo" src={logo} alt="" className="w-[28px]" />
+          <img id="logo" src={logo} alt="" className="w-[28px] " />
           <div
             id=""
-            className="flex flex-row justify-center items-center gap-x-4"
+            className="flex flex-row justify-center items-center gap-x-4 tablet:gap-x-[26px]"
           >
             <Select
-              className="w-[147px]"
+              className="w-[147px] "
               styles={{
                 control: (provided, state) => ({
                   ...provided,
                   boxShadow: state.isFocused ? "0 0 0 2px #8F19E8" : "none",
                   border: "none",
                   backgroundColor: "none",
+                  cursor: "pointer",
                 }),
+
                 singleValue: (provided) => ({
                   ...provided,
                   color: isLight ? "black" : "white",
@@ -130,16 +132,24 @@ function Landing() {
                 }),
                 option: (provided, state) => ({
                   ...provided,
-                  backgroundColor: state.isSelected
-                    ? "#8F19E8"
-                    : isLight
-                    ? "white"
-                    : "#050505",
+                  background: isLight ? "none" : "#050505",
+                  
+
                   color: state.isSelected
-                    ? "white"
+                    ? "#8F19E8"
+                    
                     : isLight
                     ? "#050505"
                     : "white",
+                    cursor: "pointer",
+
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  backgroundColor: isLight ? "white" : "#050505", 
+                  color: isLight ? "black" : "white", 
+                  borderRadius: "8px",
+                  boxShadow: "0px 5px 30px #A445ED", 
                 }),
               }}
               value={fontOptions.find((option) => option.value === font)}
@@ -147,11 +157,11 @@ function Landing() {
               onChange={handleFontChange}
             />
 
-            <div className="bg-gray-200 w-px h-8"></div>
+            <div className="bg-gray-200 w-px h-8 "></div>
             <label className="relative flex justify-between items-center ">
               <input
                 type="checkbox"
-                className="absolute left-1/2 -translate-x-1/2 w-full h-full peer appearance-none rounded-md"
+                className="absolute left-1/2 -translate-x-1/2 w-full h-full peer appearance-none rounded-md cursor-pointer"
                 onChange={handleCheckboxChange}
               />
               <span className="w-[40px] h-[20px] flex items-center flex-shrink-0  p-[3px] bg-meaning-color rounded-full duration-300 ease-in-out peer-checked:bg-purple-custom after:w-[14px] after:h-[14px] after:bg-white after:rounded-full after:shadow-md after:duration-300 peer-checked:after:translate-x-5 group-hover:after:translate-x-1"></span>
@@ -165,17 +175,17 @@ function Landing() {
           </div>
         </div>
         <form
-          className="w-full flex justify-center relative mt-6"
+          className="w-full flex justify-center relative mt-6  tablet:mt-[52px]"
           onSubmit={handleSubmit}
         >
           <div className="w-full">
             <div className="">
               <input
-                className="bg-gray-200 appearance-none border-2 rounded-xl w-full py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-purple-custom"
+                className="bg-gray-200 appearance-none border-2 rounded-xl w-full py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-purple-custom cursor-pointer tablet:h-[64px]"
                 style={{
                   backgroundColor: isLight ? "#F3F4F6" : "#1F1F1F",
                   color: isLight ? "black" : "white",
-                  border: isLight ? "" : " 2px solid black",
+                  borderColor: isLight ? "" : "purple-custom ",
                 }}
                 id="searchBar"
                 type="text"
@@ -189,7 +199,7 @@ function Landing() {
             id="search_icon"
             src={searchIcon}
             alt=""
-            className="w-[15.5px] absolute top-3 right-3 cursor-pointer"
+            className="w-[15.5px] absolute top-3 right-3 cursor-pointer tablet:top-[24px] tablet:right-[24px]"
             onClick={handleSubmit}
           />
         </form>
@@ -201,11 +211,11 @@ function Landing() {
             <div key={index}>
               <div id="container1">
                 {responseData && (
-                  <div className="flex items-center justify-between mt-6">
+                  <div className="flex items-center justify-between mt-6 tablet:mt-[43px] desktop:mt-[45px]">
                     <div>
                       <h1
                         id="word"
-                        className={`font-${font} text-4xl leading-10 font-[700] ${
+                        className={`font-${font} text-4xl leading-10 font-[700] tablet:font-bold tablet:text-5xl tablet:leading-[67px] ${
                           isLight ? "text-keyboard-color" : "text-white"
                         }`}
                       >
@@ -213,7 +223,7 @@ function Landing() {
                       </h1>
                       <h2
                         id="phonetic"
-                        className="{`font-${font} font-[400] text-base leading-6 text-purple-custom mt-[8px]"
+                        className="{`font-${font} font-[400] text-base leading-6 text-purple-custom mt-[8px] tablet:font-normal tablet:text-lg tablet:leading-[29px] tablet:mt-[11px] desktop:mt-[8px]"
                       >
                         {responseData.phonetic}
                       </h2>
@@ -221,7 +231,7 @@ function Landing() {
                     <img
                       src={playIcon}
                       alt=""
-                      className="w-[48px]"
+                      className="w-[48px] tablet:w-[75px]"
                       style={{ cursor: "pointer" }}
                       onClick={playAudio}
                     />
@@ -231,11 +241,11 @@ function Landing() {
               </div>
               <div
                 id="noun_div"
-                className="flex flex-row items-center gap-[25px] mt-[31px]"
+                className="flex flex-row items-center gap-[25px] mt-[31px] tablet:mt-[42px]"
               >
                 <h3
                   id="noun"
-                  className={`font-${font} font-bold text-base leading-tight ${
+                  className={`font-${font} font-bold text-base leading-tight tablet:font-bold tablet:text-lg tablet:leading-[25px]  desktop:text-[24px;] desktop:leading-[29px] ${
                     isLight ? "text-keyboard-color" : "text-white"
                   } italic`}
                 >
@@ -249,7 +259,7 @@ function Landing() {
                 ></div>
               </div>
               {responseData && (
-                <h3 className="{`font-${font} font-[400] text-sm leading-5 text-meaning-color mt-[31px]">
+                <h3 className="{`font-${font} font-[400] text-sm leading-5 text-meaning-color mt-[31px] tablet:font-normal tablet:text-base tablet:leading-[21px] tablet:mt-[44px] desktop:text-[20px;] desktop:leading-[26px]">
                   Meaning
                 </h3>
               )}
@@ -257,7 +267,7 @@ function Landing() {
                 <div key={index}>
                   <div
                     id="p_div"
-                    className="mt-[17px] flex flex-row items-start justify-start gap-5"
+                    className="mt-[17px] flex flex-row items-start justify-start gap-5 tablet:mt-[27px]"
                   >
                     <div
                       id="dot"
@@ -265,25 +275,25 @@ function Landing() {
                     ></div>
                     <p
                       id="p-text"
-                      className={`font-${font} font-[400] text-xs leading-6 ${
+                      className={`font-${font} font-[400] text-xs leading-6 tablet:text-base ${
                         isLight ? "text-keyboard-color" : "text-white"
-                      } w-[302px]`}
+                      } w-[302px] tablet:w-[641px] desktop:w-[689px]`}
                     >
                       {def.definition}
                     </p>
                   </div>
 
                   {def.example && (
-                    <p className="{`font-${font} font-[400] text-sm leading-6 text-meaning-color pl-6 box-border rounded mt-[13px]">
+                    <p className="{`font-${font} font-[400] text-sm leading-6 text-meaning-color pl-6 box-border rounded mt-[13px] tablet:text-base w-[302px] tablet:w-[641px] desktop:w-[689px]">
                       "{def.example}"
                     </p>
                   )}
                   {def.synonyms && def.synonyms.length > 0 && (
-                    <div className="flex items-center gap-x-6 mt-[24px]">
-                      <h4 className="{`font-${font} font-[400] leading-tight text-meaning-color">
+                    <div className="flex items-center gap-x-6 mt-[24px] tablet:mt-[40px] desktop:mt-[64px]">
+                      <h4 className="{`font-${font} font-[400] leading-tight text-meaning-color tablet:font-normal tablet:text-base tablet:leading-[21px] ">
                         Synonyms
                       </h4>
-                      <ul className="flex items-center gap-x-4 {`font-${font} font-[700] text-base leading-tight text-purple-custom">
+                      <ul className="flex items-center gap-x-4 {`font-${font} font-[700] text-base leading-tight text-purple-custom tablet:text-base tablet:leading-[21px] hover:underline cursor-pointer">
                         {def.synonyms.map((syn, index) => (
                           <li key={index}>{syn}</li>
                         ))}
@@ -310,7 +320,11 @@ function Landing() {
         {notFound && (
           <div className="flex flex-col items-center justify-center mt-6">
             <img src={Emoji} alt="" className="w-[64px] mt-[132px]" />
-            <h2 className={`font-${font} font-bold text-2xl leading-6 text-center ${isLight ? "text-keyboard-color" : "text-white"} mt-[44px]`}>
+            <h2
+              className={`font-${font} font-bold text-2xl leading-6 text-center ${
+                isLight ? "text-keyboard-color" : "text-white"
+              } mt-[44px]`}
+            >
               No Definitions Found
             </h2>
             <h2 className="{`font-${font} mt-[24px] font-normal text-base leading-6 text-meaning-color text-center">
@@ -323,7 +337,9 @@ function Landing() {
 
         {responseData && !notFound && (
           <>
-            <div className="bg-gray-200 h-px w-full mt-[32px]"></div>
+            <div className={`bg-gray-200 h-px w-full mt-[32px] tablet:mt-[40px] ${
+                    isLight ? "" : "bg-gray-700"
+                  }`}></div>
             <footer id="footer" className="mt-[24px]">
               <h2 className="{`font-${font} font-[400] text-sm leading-6 underline text-meaning-color">
                 Source

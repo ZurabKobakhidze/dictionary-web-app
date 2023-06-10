@@ -18,6 +18,10 @@ export default {
         inconsolata: ['Inconsolata', 'monospace'],
         lora: ["Lora", "serif"],
       },
+      screens: {
+        tablet: "768px",
+        desktop: "1440px",
+      },
     },
   },
   plugins: [],
