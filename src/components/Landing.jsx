@@ -23,6 +23,7 @@ function Landing() {
   const audioRef = useRef(null);
   const [isLight, setIsLight] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [isEmptyInput, setIsEmptyInput] = useState(false);
 
   const getInformation = async () => {
     try {
@@ -50,6 +51,13 @@ function Landing() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    if (searchTerm.trim() === "") {
+      setIsEmptyInput(true);
+      return;
+    }
+
+    setIsEmptyInput(false);
     getInformation();
   };
 
@@ -133,23 +141,20 @@ function Landing() {
                 option: (provided, state) => ({
                   ...provided,
                   background: isLight ? "none" : "#050505",
-                  
 
                   color: state.isSelected
                     ? "#8F19E8"
-                    
                     : isLight
                     ? "#050505"
                     : "white",
-                    cursor: "pointer",
-
+                  cursor: "pointer",
                 }),
                 menu: (provided) => ({
                   ...provided,
-                  backgroundColor: isLight ? "white" : "#050505", 
-                  color: isLight ? "black" : "white", 
+                  backgroundColor: isLight ? "white" : "#050505",
+                  color: isLight ? "black" : "white",
                   borderRadius: "8px",
-                  boxShadow: "0px 5px 30px #A445ED", 
+                  boxShadow: "0px 5px 30px #A445ED",
                 }),
               }}
               value={fontOptions.find((option) => option.value === font)}
@@ -181,11 +186,13 @@ function Landing() {
           <div className="w-full">
             <div className="">
               <input
-                className="bg-gray-200 appearance-none border-2 rounded-xl w-full py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-purple-custom cursor-pointer tablet:h-[64px]"
+                className={`bg-gray-200 appearance-none border-2 rounded-xl w-full py-2 px-4 leading-tight focus:outline-none focus:bg-white focus:border-purple-custom cursor-pointer tablet:h-[64px] ${
+                  isEmptyInput ? 'border-red-500' : ''
+                }`}
                 style={{
-                  backgroundColor: isLight ? "#F3F4F6" : "#1F1F1F",
-                  color: isLight ? "black" : "white",
-                  borderColor: isLight ? "" : "purple-custom ",
+                  backgroundColor: isLight ? '#F3F4F6' : '#1F1F1F',
+                  color: isLight ? 'black' : 'white',
+                  borderColor: isLight ? '' : 'purple-custom ',
                 }}
                 id="searchBar"
                 type="text"
@@ -203,7 +210,13 @@ function Landing() {
             onClick={handleSubmit}
           />
         </form>
-
+        {isEmptyInput && (
+          <p
+            className={`font-${font} font-normal text-base md:text-lg leading-6 mt-[8px] text-red-500`}
+          >
+            Whoops, can’t be empty...
+          </p>
+        )}
         {!notFound &&
           responseData &&
           responseData.meanings &&
@@ -228,13 +241,18 @@ function Landing() {
                         {responseData.phonetic}
                       </h2>
                     </div>
-                    <img
-                      src={playIcon}
-                      alt=""
-                      className="w-[48px] tablet:w-[75px]"
-                      style={{ cursor: "pointer" }}
-                      onClick={playAudio}
-                    />
+                    {audioUrl &&
+                      responseData &&
+                      responseData.phonetics &&
+                      responseData.phonetics[0].audio && (
+                        <img
+                          src={playIcon}
+                          alt=""
+                          className="w-[48px] tablet:w-[75px]"
+                          style={{ cursor: "pointer" }}
+                          onClick={playAudio}
+                        />
+                      )}
                   </div>
                 )}
                 <audio ref={audioRef} src={audioUrl} />
@@ -337,9 +355,11 @@ function Landing() {
 
         {responseData && !notFound && (
           <>
-            <div className={`bg-gray-200 h-px w-full mt-[32px] tablet:mt-[40px] ${
-                    isLight ? "" : "bg-gray-700"
-                  }`}></div>
+            <div
+              className={`bg-gray-200 h-px w-full mt-[32px] tablet:mt-[40px] ${
+                isLight ? "" : "bg-gray-700"
+              }`}
+            ></div>
             <footer id="footer" className="mt-[24px]">
               <h2 className="{`font-${font} font-[400] text-sm leading-6 underline text-meaning-color">
                 Source
